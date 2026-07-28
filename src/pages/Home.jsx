@@ -1,22 +1,51 @@
+import { useState } from 'react';
 import MovieCard from "../components/movie_card";
 import "../css/Home.css";
-import { useState } from 'react';
 
-function Home() {
+function Home({ favorites, onToggleFavorite }) {
   const [searchQuery, setSearchQuery] = useState("");
 
-    const movies = [
-        {id:1, title: "Inception", release_date: "2010-07-16", url: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg"},
-        {id:2, title: "The Dark Knight", release_date: "2008-07-18", url: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg"},
-        {id:3, title: "Interstellar", release_date: "2014-11-07", url: "https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg"},
-        {id:4, title: "The Matrix", release_date: "1999-03-31", url: "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg"},
-        {id:5, title: "The Shawshank Redemption", release_date: "1994-09-23", url: "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg"}
-    ];
-    const handleSearch = (event) => {
-        event.preventDefault();
-        alert(`Searching for: ${searchQuery}`);
-        setSearchQuery("");
-    }
+  const movies = [
+    {
+      id: 1,
+      title: "Inception",
+      release_date: "2010-07-16",
+      url: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
+    },
+    {
+      id: 2,
+      title: "The Dark Knight",
+      release_date: "2008-07-18",
+      url: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    },
+    {
+      id: 3,
+      title: "Interstellar",
+      release_date: "2014-11-07",
+      url: "https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
+    },
+    {
+      id: 4,
+      title: "The Matrix",
+      release_date: "1999-03-31",
+      url: "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+    },
+    {
+      id: 5,
+      title: "The Shawshank Redemption",
+      release_date: "1994-09-23",
+      url: "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
+    },
+  ];
+
+  const filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <div className="home">
       <section className="hero">
@@ -39,10 +68,20 @@ function Home() {
       </form>
 
       <div className="movies-grid">
-        {movies.map((movie) =>
-          movie.title.toLowerCase().startsWith(searchQuery) && (
-            <MovieCard key={movie.id} movie={movie} />
-          )
+        {filteredMovies.length > 0 ? (
+          filteredMovies.map((movie) => {
+            const isFavorite = favorites.some((item) => item.id === movie.id);
+            return (
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                isFavorite={isFavorite}
+                onToggleFavorite={onToggleFavorite}
+              />
+            );
+          })
+        ) : (
+          <div className="no-results">No movies found. Try another search term.</div>
         )}
       </div>
     </div>

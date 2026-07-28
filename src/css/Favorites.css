@@ -30,6 +30,18 @@
   margin: 0 auto;
 }
 
+.favorites h2 {
+  color: #f8f9fb;
+  margin-bottom: 1.25rem;
+  font-size: clamp(2rem, 2.8vw, 3rem);
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
