@@ -6,16 +6,14 @@ import Home from './pages/Home';
 
 function App() {
   return (
-  <div>
-
-    <Nav_Bar />
-    <main className="main-content">
-
-      <Routes>
-        <Route path="/" element={<Home />}/>
-        <Route path="/favorites" element={<Favorites />}/>
-      </Routes>
-    </main>
+    <div className="app-shell">
+      <Nav_Bar />
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/favorites" element={<Favorites />} />
+        </Routes>
+      </main>
     </div>
   );
 }

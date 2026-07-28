@@ -1,40 +1,35 @@
 .favorites {
-  padding: 2rem;
+  padding: 2rem 1rem;
   width: 100%;
   box-sizing: border-box;
-}
-
-.favorites h2 {
-  margin-bottom: 2rem;
-  text-align: center;
-  font-size: 2.5rem;
-  color: #ffffff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .favorites-empty {
   text-align: center;
   padding: 4rem 2rem;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
   margin: 2rem auto;
-  max-width: 600px;
+  max-width: 640px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.22);
 }
 
 .favorites-empty h2 {
-  margin-bottom: 1rem;
-  font-size: 2rem;
-  color: #e50914;
+  margin-bottom: 0.85rem;
+  font-size: clamp(2rem, 2.5vw, 2.6rem);
+  color: #ff5b7a;
 }
 
 .favorites-empty p {
-  color: #999;
-  font-size: 1.2rem;
-  line-height: 1.6;
+  color: #d1d4e0;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  max-width: 30rem;
+  margin: 0 auto;
 }
 
-
-/* Animation for new favorites being added */
 @keyframes fadeIn {
   from {
     opacity: 0;

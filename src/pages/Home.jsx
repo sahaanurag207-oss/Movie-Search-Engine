@@ -1,9 +1,9 @@
 import MovieCard from "../components/movie_card";
-import"../css/Home.css";
+import "../css/Home.css";
 import { useState } from 'react';
 
 function Home() {
-    const [searchQuery , setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
     const movies = [
         {id:1, title: "Inception", release_date: "2010-07-16", url: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg"},
@@ -17,27 +17,36 @@ function Home() {
         alert(`Searching for: ${searchQuery}`);
         setSearchQuery("");
     }
- return (
+  return (
     <div className="home">
-        <form onSubmit={handleSearch} className="search-form">
-            <input 
-            type="text" 
-            placeholder="Search for a movie..."
-            className="search-input"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} 
-            />
-            <button type="submit" className="search-btn">Search</button>
-        </form>
+      <section className="hero">
+        <div className="hero-copy">
+          <span className="hero-badge">Movie Search</span>
+          <h1>Discover your next favorite film.</h1>
+          <p>Search top titles, browse curated picks, and save favorites in a polished responsive interface.</p>
+        </div>
+      </section>
 
-    <div className="movies-grid">
-        {movies.map((movie) => 
-            movie.title.toLowerCase().startsWith(searchQuery) && (
+      <form onSubmit={handleSearch} className="search-form">
+        <input
+          type="text"
+          placeholder="Search for a movie..."
+          className="search-input"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button type="submit" className="search-btn">Search</button>
+      </form>
+
+      <div className="movies-grid">
+        {movies.map((movie) =>
+          movie.title.toLowerCase().startsWith(searchQuery) && (
             <MovieCard key={movie.id} movie={movie} />
-        ))}
+          )
+        )}
+      </div>
     </div>
- </div>
- );
+  );
 }
 
 export default Home;
