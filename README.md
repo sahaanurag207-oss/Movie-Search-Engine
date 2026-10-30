@@ -6,7 +6,7 @@ A fast, responsive, and intuitive web application built with **React** and **Tai
 
 ## ✨ Features
 
-- 🔍 **Real-Time Search:** Instant movie filtering as you type with debouncing for optimized API requests.
+- 🔍 **Movie Search:** Search OMDb titles and browse matching movies.
 - 🍿 **Detailed Movie Pages:** View posters, release dates, ratings, plot synopses, and genre tags.
 - 📱 **Fully Responsive:** Seamless layout designed for desktop, tablet, and mobile displays.
 - ⚡ **Skeleton Loading States:** Clean UI indicators during network requests for smoother UX.
@@ -38,3 +38,17 @@ A fast, responsive, and intuitive web application built with **React** and **Tai
    ```bash
    git clone [https://github.com/your-username/react-movie-search.git](https://github.com/your-username/react-movie-search.git)
    cd react-movie-search
+   npm install
+   ```
+
+2. Create a `.env.local` file in the project root and add your OMDb API key:
+   ```env
+   VITE_OMDB_API_KEY=your_omdb_api_key
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+Vite exposes `VITE_` variables in browser code. The key is included in requests from the user's browser, so use a server-side proxy if the key must remain private.

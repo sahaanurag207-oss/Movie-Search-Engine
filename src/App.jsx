@@ -4,9 +4,11 @@ import Favorites from './pages/Favorites';
 import { Routes, Route } from 'react-router-dom';
 import Nav_Bar from './components/Nav_Bar';
 import Home from './pages/Home';
+import MovieQuickView from './components/MovieQuickView';
 
 function App() {
   const [favorites, setFavorites] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   const handleToggleFavorite = (movie) => {
     setFavorites((currentFavorites) => {
@@ -29,6 +31,7 @@ function App() {
               <Home
                 favorites={favorites}
                 onToggleFavorite={handleToggleFavorite}
+                onQuickView={setSelectedMovie}
               />
             }
           />
@@ -38,11 +41,18 @@ function App() {
               <Favorites
                 favorites={favorites}
                 onToggleFavorite={handleToggleFavorite}
+                onQuickView={setSelectedMovie}
               />
             }
           />
         </Routes>
       </main>
+      {selectedMovie && (
+        <MovieQuickView
+          movie={selectedMovie}
+          onClose={() => setSelectedMovie(null)}
+        />
+      )}
     </div>
   );
 }

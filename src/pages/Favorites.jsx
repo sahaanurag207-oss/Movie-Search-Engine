@@ -1,19 +1,31 @@
 import MovieCard from "../components/movie_card";
 import "../css/Favorites.css";
 
-function Favorites({ favorites, onToggleFavorite }) {
+function Favorites({ favorites, onToggleFavorite, onQuickView }) {
   if (favorites.length === 0) {
     return (
-      <div className="favorites-empty">
-        <h2>No Favorites Movies Yet</h2>
-        <p>Click the heart icon on a movie to add it to your favorites.</p>
-      </div>
+      <section className="favorites">
+        <div className="favorites-heading">
+          <p className="section-kicker">Your personal collection</p>
+          <h1>Favorites</h1>
+          <p>Keep the films you want to come back to close at hand.</p>
+        </div>
+        <div className="favorites-empty">
+          <span className="favorites-empty-icon" aria-hidden="true">♥</span>
+          <h2>Your watchlist starts here</h2>
+          <p>Tap the heart on any film you love and it’ll be waiting for you here.</p>
+        </div>
+      </section>
     );
   }
 
   return (
-    <div className="favorites">
-      <h2>Your Favorites</h2>
+    <section className="favorites">
+      <div className="favorites-heading">
+        <p className="section-kicker">Your personal collection</p>
+        <h1>Favorites</h1>
+        <p>{favorites.length} {favorites.length === 1 ? "film" : "films"} saved for later.</p>
+      </div>
       <div className="movies-grid">
         {favorites.map((movie) => (
           <MovieCard
@@ -21,10 +33,11 @@ function Favorites({ favorites, onToggleFavorite }) {
             movie={movie}
             isFavorite={true}
             onToggleFavorite={onToggleFavorite}
+            onQuickView={onQuickView}
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
