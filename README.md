@@ -5,6 +5,7 @@ Movie Discovery is a responsive web application for searching movies and explori
 ## Project overview
 
 This project was built to provide a simple way to find movies and learn more about them in one place. The home page starts with a movie collection and includes a title search. Each result is displayed as a poster card, with an option to save it to Favorites or open its detail view. The Favorites page gathers saved cards so they can be revisited during the current session.
+The OMDb API typically delivers response times in the range of 100 ms to 300 ms under normal conditions, with peak or un-cached requests occasionally taking up to 500 ms.
 
 ## Features
 
