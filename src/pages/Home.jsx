@@ -1,94 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import didYouMean from "didyoumean";
 import MovieCard from "../components/movie_card";
 import "../css/Home.css";
-
-const COMMON_MOVIE_TITLES = [
-  "Alien",
-  "Avengers",
-  "Avengers: Endgame",
-  "Avatar",
-  "Back to the Future",
-  "Barbie",
-  "Batman",
-  "Black Panther",
-  "Coco",
-  "Deadpool",
-  "Doctor Strange",
-  "Dune",
-  "Dune: Part Two",
-  "Finding Nemo",
-  "Forrest Gump",
-  "Frozen",
-  "Gladiator",
-  "The Godfather",
-  "The Great Gatsby",
-  "Guardians of the Galaxy",
-  "Harry Potter",
-  "The Hunger Games",
-  "Inception",
-  "The Incredibles",
-  "Interstellar",
-  "Iron Man",
-  "Jaws",
-  "John Wick",
-  "Joker",
-  "Jurassic Park",
-  "La La Land",
-  "The Lion King",
-  "The Lord of the Rings",
-  "The Matrix",
-  "The Notebook",
-  "Oppenheimer",
-  "Parasite",
-  "Pirates of the Caribbean",
-  "Pulp Fiction",
-  "Rocky",
-  "Scream",
-  "The Shawshank Redemption",
-  "Shrek",
-  "Spider-Man",
-  "Star Wars",
-  "The Terminator",
-  "The Dark Knight",
-  "The Twilight Saga",
-  "Titanic",
-  "Toy Story",
-  "Up",
-  "Whiplash",
-];
-
-async function searchMovies(query, signal) {
-  const apiKey = import.meta.env.VITE_OMDB_API_KEY;
-  if (!apiKey) {
-    throw new Error("OMDb API key is not configured. Add VITE_OMDB_API_KEY to .env.local.");
-  }
-
-  const params = new URLSearchParams({ apikey: apiKey, s: query });
-  const response = await fetch(`https://www.omdbapi.com/?${params}`, { signal });
-  if (!response.ok) {
-    throw new Error(`OMDb request failed (${response.status}). Please try again.`);
-  }
-
-  const data = await response.json();
-  if (data.Response === "False") {
-    if (data.Error === "Movie not found!") {
-      return [];
-    }
-    throw new Error(data.Error || "OMDb returned an unexpected response.");
-  }
-
-  if (!Array.isArray(data.Search)) {
-    throw new Error("OMDb returned an unexpected response.");
-  }
-
-  return data.Search.map((movie) => ({
-    id: movie.imdbID,
-    title: movie.Title,
-    release_date: movie.Year,
-    url: movie.Poster,
-  }));
-}
+import { searchMovies, searchMoviesWithFallback } from "../utils/searchWithFallback";
 
 function Home({ favorites, onToggleFavorite, onQuickView }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -97,18 +10,15 @@ function Home({ favorites, onToggleFavorite, onQuickView }) {
   const [error, setError] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
   const requestController = useRef(null);
-  const knownMovieTitles = useRef(new Set());
   const [suggestedTitle, setSuggestedTitle] = useState("");
+  const [suggestionError, setSuggestionError] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
     requestController.current = controller;
 
     searchMovies("star wars", controller.signal)
-      .then((results) => {
-        setMovies(results);
-        results.forEach((movie) => knownMovieTitles.current.add(movie.title));
-      })
+      .then(setMovies)
       .catch((requestError) => {
         if (!controller.signal.aborted) {
           setError(requestError.message || "Unable to load movies from OMDb.");
@@ -132,19 +42,14 @@ function Home({ favorites, onToggleFavorite, onQuickView }) {
     setIsLoading(true);
     setError("");
     setSuggestedTitle("");
+    setSuggestionError("");
     setHasSearched(true);
 
     try {
-      const results = await searchMovies(query, controller.signal);
-      setMovies(results);
-      results.forEach((movie) => knownMovieTitles.current.add(movie.title));
-      if (results.length === 0) {
-        const candidates = [...new Set([...COMMON_MOVIE_TITLES, ...knownMovieTitles.current])];
-        const match = didYouMean(query, candidates);
-        if (match && match.toLowerCase() !== query.toLowerCase()) {
-          setSuggestedTitle(match);
-        }
-      }
+      const search = await searchMoviesWithFallback(query, controller.signal);
+      setMovies(search.results);
+      setSuggestedTitle(search.suggestion);
+      setSuggestionError(search.suggestionError);
     } catch (requestError) {
       if (!controller.signal.aborted) {
         setError(requestError.message || "Unable to search OMDb. Please try again.");
@@ -185,7 +90,7 @@ function Home({ favorites, onToggleFavorite, onQuickView }) {
         </form>
         {suggestedTitle && (
           <p className="search-suggestion" aria-live="polite">
-            Did you mean{" "}
+            No exact matches for “{searchQuery.trim()}”. Showing results for{" "}
             <button
               type="button"
               onClick={() => {
@@ -195,12 +100,13 @@ function Home({ favorites, onToggleFavorite, onQuickView }) {
             >
               {suggestedTitle}
             </button>
-            ?
+            .
           </p>
         )}
       </section>
 
       {error && <p className="search-message search-error" role="alert">{error}</p>}
+      {suggestionError && <p className="search-message" role="status">{suggestionError}</p>}
       {isLoading && <p className="search-message" role="status">Searching OMDb...</p>}
 
       <section className="collection">

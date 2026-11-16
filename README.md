@@ -12,7 +12,7 @@ The OMDb API typically delivers response times in the range of 100 ms to 300 ms 
 ### Movie search and discovery
 
 - Search the OMDb catalog by movie title.
-- When a search has no results, suggest a close title from a common-movie list and movies found in earlier searches.
+- When a search has no results, check spelling with Datamuse and verify suggested movie titles with OMDb.
 - The home page loads an initial set of results when the app opens.
 - Search results include a movie poster, title, and year when that information is available.
 - Empty results, loading activity, and API errors are displayed with messages.
@@ -55,6 +55,7 @@ The app uses OMDb for the data it displays; TMDB is not currently connected.
 - **React Router** for navigation between the home and Favorites pages
 - **CSS** for responsive page, card, navigation, and dialog styling
 - **OMDb API** for movie search and detail data
+- **Datamuse API** for spelling suggestions when a movie search has no results
 - Browser `fetch` for API requests
 
 ## Requirements
