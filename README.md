@@ -39,7 +39,7 @@ The detail view displays a loading state while the request is in progress and an
 
 ### Responsive interface
 
-The layout adapts to desktop and mobile screen sizes. Movie posters use a placeholder when no poster is available, and the details dialog is optimized for smaller screens.
+The layout adapts to desktop and mobile screen sizes. Missing posters and failed poster URLs use a title-initial placeholder, and the details dialog is optimized for smaller screens.
 
 ## API integration experience
 

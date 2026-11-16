@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "../css/MovieQuickView.css";
+import MoviePoster from "./MoviePoster";
 
 function hasValue(value) {
   return typeof value === "string" && value.trim() !== "" && value.trim().toUpperCase() !== "N/A";
@@ -116,13 +117,7 @@ function MovieQuickView({ movie, onClose }) {
         </button>
 
         <div className="quick-view-poster">
-          {poster && poster !== "N/A" ? (
-            <img src={poster} alt={`${title} poster`} />
-          ) : (
-            <span className="poster-placeholder" aria-hidden="true">
-              {title.charAt(0)}
-            </span>
-          )}
+          <MoviePoster title={title} src={poster} alt={`${title} poster`} loading="eager" />
         </div>
 
         <div className="quick-view-content">

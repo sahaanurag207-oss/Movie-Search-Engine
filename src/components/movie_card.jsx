@@ -1,4 +1,5 @@
 import "../css/movie_card.css";
+import MoviePoster from "./MoviePoster";
 
 function getDisplayText(value, fallback) {
     if (typeof value !== "string") return fallback;
@@ -25,13 +26,7 @@ function MovieCard({ movie, isFavorite, onToggleFavorite, onQuickView }) {
                     onClick={() => onQuickView?.(movie)}
                     aria-label={`Quick view details for ${title}`}
                 >
-                    {poster ? (
-                        <img src={poster} alt="" loading="lazy" />
-                    ) : (
-                        <span className="poster-placeholder" aria-hidden="true">
-                            {title.charAt(0)}
-                        </span>
-                    )}
+                    <MoviePoster title={title} src={poster} />
                     <span className="quick-view-label" aria-hidden="true">Quick view</span>
                 </button>
                 <div className="movie-overlay">
