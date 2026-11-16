@@ -3,6 +3,61 @@ import didYouMean from "didyoumean";
 import MovieCard from "../components/movie_card";
 import "../css/Home.css";
 
+const COMMON_MOVIE_TITLES = [
+  "Alien",
+  "Avengers",
+  "Avengers: Endgame",
+  "Avatar",
+  "Back to the Future",
+  "Barbie",
+  "Batman",
+  "Black Panther",
+  "Coco",
+  "Deadpool",
+  "Doctor Strange",
+  "Dune",
+  "Dune: Part Two",
+  "Finding Nemo",
+  "Forrest Gump",
+  "Frozen",
+  "Gladiator",
+  "The Godfather",
+  "The Great Gatsby",
+  "Guardians of the Galaxy",
+  "Harry Potter",
+  "The Hunger Games",
+  "Inception",
+  "The Incredibles",
+  "Interstellar",
+  "Iron Man",
+  "Jaws",
+  "John Wick",
+  "Joker",
+  "Jurassic Park",
+  "La La Land",
+  "The Lion King",
+  "The Lord of the Rings",
+  "The Matrix",
+  "The Notebook",
+  "Oppenheimer",
+  "Parasite",
+  "Pirates of the Caribbean",
+  "Pulp Fiction",
+  "Rocky",
+  "Scream",
+  "The Shawshank Redemption",
+  "Shrek",
+  "Spider-Man",
+  "Star Wars",
+  "The Terminator",
+  "The Dark Knight",
+  "The Twilight Saga",
+  "Titanic",
+  "Toy Story",
+  "Up",
+  "Whiplash",
+];
+
 async function searchMovies(query, signal) {
   const apiKey = import.meta.env.VITE_OMDB_API_KEY;
   if (!apiKey) {
@@ -84,7 +139,8 @@ function Home({ favorites, onToggleFavorite, onQuickView }) {
       setMovies(results);
       results.forEach((movie) => knownMovieTitles.current.add(movie.title));
       if (results.length === 0) {
-        const match = didYouMean(query, [...knownMovieTitles.current]);
+        const candidates = [...new Set([...COMMON_MOVIE_TITLES, ...knownMovieTitles.current])];
+        const match = didYouMean(query, candidates);
         if (match && match.toLowerCase() !== query.toLowerCase()) {
           setSuggestedTitle(match);
         }
