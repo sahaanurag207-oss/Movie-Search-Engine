@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import didYouMean from "didyoumean";
 import MovieCard from "../components/movie_card";
 import "../css/Home.css";
 
@@ -41,13 +42,18 @@ function Home({ favorites, onToggleFavorite, onQuickView }) {
   const [error, setError] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
   const requestController = useRef(null);
+  const knownMovieTitles = useRef(new Set());
+  const [suggestedTitle, setSuggestedTitle] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
     requestController.current = controller;
 
     searchMovies("star wars", controller.signal)
-      .then(setMovies)
+      .then((results) => {
+        setMovies(results);
+        results.forEach((movie) => knownMovieTitles.current.add(movie.title));
+      })
       .catch((requestError) => {
         if (!controller.signal.aborted) {
           setError(requestError.message || "Unable to load movies from OMDb.");
@@ -62,9 +68,7 @@ function Home({ favorites, onToggleFavorite, onQuickView }) {
     return () => controller.abort();
   }, []);
 
-  const handleSearch = async (event) => {
-    event.preventDefault();
-    const query = searchQuery.trim();
+  const searchForTitle = async (query) => {
     if (!query) return;
 
     requestController.current?.abort();
@@ -72,10 +76,19 @@ function Home({ favorites, onToggleFavorite, onQuickView }) {
     requestController.current = controller;
     setIsLoading(true);
     setError("");
+    setSuggestedTitle("");
     setHasSearched(true);
 
     try {
-      setMovies(await searchMovies(query, controller.signal));
+      const results = await searchMovies(query, controller.signal);
+      setMovies(results);
+      results.forEach((movie) => knownMovieTitles.current.add(movie.title));
+      if (results.length === 0) {
+        const match = didYouMean(query, [...knownMovieTitles.current]);
+        if (match && match.toLowerCase() !== query.toLowerCase()) {
+          setSuggestedTitle(match);
+        }
+      }
     } catch (requestError) {
       if (!controller.signal.aborted) {
         setError(requestError.message || "Unable to search OMDb. Please try again.");
@@ -85,6 +98,11 @@ function Home({ favorites, onToggleFavorite, onQuickView }) {
         setIsLoading(false);
       }
     }
+  };
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    searchForTitle(searchQuery.trim());
   };
 
   return (
@@ -109,6 +127,21 @@ function Home({ favorites, onToggleFavorite, onQuickView }) {
             {isLoading ? "Searching..." : "Find a film"}
           </button>
         </form>
+        {suggestedTitle && (
+          <p className="search-suggestion" aria-live="polite">
+            Did you mean{" "}
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery(suggestedTitle);
+                searchForTitle(suggestedTitle);
+              }}
+            >
+              {suggestedTitle}
+            </button>
+            ?
+          </p>
+        )}
       </section>
 
       {error && <p className="search-message search-error" role="alert">{error}</p>}

@@ -12,6 +12,7 @@ The OMDb API typically delivers response times in the range of 100 ms to 300 ms 
 ### Movie search and discovery
 
 - Search the OMDb catalog by movie title.
+- When a search has no results, suggest a close title from movies found in earlier searches.
 - The home page loads an initial set of results when the app opens.
 - Search results include a movie poster, title, and year when that information is available.
 - Empty results, loading activity, and API errors are displayed with messages.

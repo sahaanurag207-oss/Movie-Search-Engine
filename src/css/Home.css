@@ -136,6 +136,27 @@
   opacity: 0.7;
 }
 
+.search-suggestion {
+  position: relative;
+  z-index: 1;
+  width: min(620px, 100%);
+  margin: 0.8rem 0 0;
+  color: #bcb5aa;
+  font-size: 0.9rem;
+}
+
+.search-suggestion button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-accent-strong);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
 .search-message {
   margin: 1rem 0 0;
   color: var(--color-muted);
