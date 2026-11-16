@@ -15,6 +15,7 @@ The OMDb API typically delivers response times in the range of 100 ms to 300 ms 
 - When a search has no results, check spelling with Datamuse and verify suggested movie titles with OMDb.
 - The home page loads an initial set of results when the app opens.
 - Search results include a movie poster, title, and year when that information is available.
+- Missing titles or years use readable placeholders instead of appearing blank.
 - Empty results, loading activity, and API errors are displayed with messages.
 - A new search cancels any in-flight request, preventing an older response from replacing newer results.
 

@@ -1,5 +1,11 @@
 import didYouMean from "didyoumean";
 
+function getText(value) {
+  if (typeof value !== "string") return "";
+  const text = value.trim();
+  return text && text.toUpperCase() !== "N/A" ? text : "";
+}
+
 export async function searchMovies(query, signal) {
   const apiKey = import.meta.env.VITE_OMDB_API_KEY;
   if (!apiKey) {
@@ -26,9 +32,9 @@ export async function searchMovies(query, signal) {
 
   return data.Search.map((movie) => ({
     id: movie.imdbID,
-    title: movie.Title,
-    release_date: movie.Year,
-    url: movie.Poster,
+    title: getText(movie.Title) || "Untitled movie",
+    release_date: getText(movie.Year),
+    url: getText(movie.Poster),
   }));
 }
 

@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import "../css/MovieQuickView.css";
 
+function hasValue(value) {
+  return typeof value === "string" && value.trim() !== "" && value.trim().toUpperCase() !== "N/A";
+}
+
 function MovieQuickView({ movie, onClose }) {
   const [details, setDetails] = useState(null);
   const [error, setError] = useState("");
@@ -77,9 +81,15 @@ function MovieQuickView({ movie, onClose }) {
   }, [movie.id, onClose]);
 
   const displayDetails = details || {};
-  const poster = displayDetails.Poster && displayDetails.Poster !== "N/A"
-    ? displayDetails.Poster
-    : movie.url;
+  const title = hasValue(displayDetails.Title)
+    ? displayDetails.Title.trim()
+    : hasValue(movie.title) ? movie.title.trim() : "Untitled movie";
+  const poster = hasValue(displayDetails.Poster)
+    ? displayDetails.Poster.trim()
+    : hasValue(movie.url) ? movie.url.trim() : "";
+  const releaseYear = hasValue(displayDetails.Year)
+    ? displayDetails.Year.trim()
+    : hasValue(movie.release_date) ? movie.release_date.trim() : "Year unavailable";
 
   return (
     <div
@@ -107,25 +117,26 @@ function MovieQuickView({ movie, onClose }) {
 
         <div className="quick-view-poster">
           {poster && poster !== "N/A" ? (
-            <img src={poster} alt={`${movie.title} poster`} />
+            <img src={poster} alt={`${title} poster`} />
           ) : (
             <span className="poster-placeholder" aria-hidden="true">
-              {movie.title.charAt(0)}
+              {title.charAt(0)}
             </span>
           )}
         </div>
 
         <div className="quick-view-content">
           <p className="section-kicker">Movie details</p>
-          <h2 id="quick-view-title">{displayDetails.Title || movie.title}</h2>
+          <h2 id="quick-view-title">{title}</h2>
           <p className="quick-view-meta">
-            {[displayDetails.Year || movie.release_date, displayDetails.Rated, displayDetails.Runtime]
-              .filter((value) => value && value !== "N/A")
+            {[releaseYear, displayDetails.Rated, displayDetails.Runtime]
+              .filter(hasValue)
+              .map((value) => value.trim())
               .join(" · ")}
           </p>
 
-          {displayDetails.Genre && displayDetails.Genre !== "N/A" && (
-            <p className="quick-view-genre">{displayDetails.Genre}</p>
+          {hasValue(displayDetails.Genre) && (
+            <p className="quick-view-genre">{displayDetails.Genre.trim()}</p>
           )}
 
           {isLoading ? (
@@ -134,15 +145,15 @@ function MovieQuickView({ movie, onClose }) {
             <p className="quick-view-error" role="alert">{error}</p>
           ) : (
             <>
-              {displayDetails.imdbRating && displayDetails.imdbRating !== "N/A" && (
+              {hasValue(displayDetails.imdbRating) && (
                 <p className="quick-view-rating">
-                  <span aria-hidden="true">★</span> {displayDetails.imdbRating}
+                  <span aria-hidden="true">★</span> {displayDetails.imdbRating.trim()}
                   <span className="quick-view-rating-label"> IMDb</span>
                 </p>
               )}
               <p className="quick-view-plot" id="quick-view-plot">
-                {displayDetails.Plot && displayDetails.Plot !== "N/A"
-                  ? displayDetails.Plot
+                {hasValue(displayDetails.Plot)
+                  ? displayDetails.Plot.trim()
                   : "No plot summary is available."}
               </p>
               <dl className="quick-view-credits">
@@ -151,11 +162,11 @@ function MovieQuickView({ movie, onClose }) {
                   ["Cast", displayDetails.Actors],
                   ["Awards", displayDetails.Awards],
                 ]
-                  .filter(([, value]) => value && value !== "N/A")
+                  .filter(([, value]) => hasValue(value))
                   .map(([label, value]) => (
                     <div key={label}>
                       <dt>{label}</dt>
-                      <dd>{value}</dd>
+                      <dd>{value.trim()}</dd>
                     </div>
                   ))}
               </dl>
